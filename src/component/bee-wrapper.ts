@@ -1,5 +1,4 @@
 import { Bee, Reference } from '@ethersphere/bee-js';
-import type { ImageFile } from '../ui-components/types';
 import { persistUrl } from './url-storage';
 
 export class BeeWrapper {
@@ -26,15 +25,15 @@ export class BeeWrapper {
     return result.toString();
   }
 
-  async upload(file: ImageFile) {
+  async upload(file: File) {
     await this.bee.checkConnection();
 
     const stamp = await this.getStamp();
 
     const uploadedResults = await this.bee.uploadFile(
       stamp.batchID,
-      file.base64Content,
-      file.fileName
+      file,
+      file.name
     );
 
     const ref = this.decodeRef(uploadedResults.reference);

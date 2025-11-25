@@ -2,21 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { BeeWrapper } from './component/bee-wrapper';
 import ImageReader from './ui-components/image-reader';
-import type { ImageFile } from './ui-components/types';
 import viteLogo from '/solarpunk.jpg';
 import { ImageGallery } from './ui-components/image-gallery';
 import { TabName } from './util';
 import { readUrls } from './component/url-storage';
 
 function App() {
-  const [file, setFile] = useState<ImageFile | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [selectedTab, setSelectedTab] = useState(TabName.Upload);
 
   const [uploading, setUploading] = useState(false);
 
   const bee = useMemo(() => new BeeWrapper(), []);
 
-  function onFileReadFinished(imageFile: ImageFile) {
+  function onFileReadFinished(imageFile: File) {
     setFile(imageFile);
   }
 
