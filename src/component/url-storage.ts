@@ -2,7 +2,7 @@ const urlKey = 'urls';
 
 export function persistUrl(
   reference: string,
-  prefix: string = 'http://localhost:1663/bzz/'
+  prefix: string = 'http://localhost:1633/bzz/'
 ) {
   const fullUrl = `${prefix}${reference}/`;
   const existingUrls = readUrls();
