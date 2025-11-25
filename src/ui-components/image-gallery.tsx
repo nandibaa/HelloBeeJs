@@ -14,11 +14,13 @@ export function ImageGallery(props: GalleryProps) {
     <div className="image-gallery">
       {imageUrls.map((url, index) => (
         <div key={index} className="gallery-item">
-          <img
-            src={url}
-            alt={`Gallery image ${index + 1}`}
-            className="gallery-image"
-          />
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <img
+              src={url}
+              alt={`Gallery image ${index + 1}`}
+              className="gallery-image"
+            />
+          </a>
         </div>
       ))}
     </div>
