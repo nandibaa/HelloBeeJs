@@ -1,35 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useMemo, useState } from 'react';
+import './App.css';
+import { BeeWrapper } from './component/bee-wrapper';
+import ImageReader from './ui-components/image-reader';
+import viteLogo from '/solarpunk.jpg';
+import { ImageGallery } from './ui-components/image-gallery';
+import { TabName } from './util';
+import { readUrls } from './component/url-storage';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [file, setFile] = useState<File | null>(null);
+  const [selectedTab, setSelectedTab] = useState(TabName.Upload);
+
+  const [uploading, setUploading] = useState(false);
+
+  const bee = useMemo(() => new BeeWrapper(), []);
+
+  function onFileReadFinished(imageFile: File) {
+    setFile(imageFile);
+  }
+
+  function upload() {
+    setUploading(true);
+  }
+
+  useEffect(() => {
+    async function doUpload() {
+      if (file) {
+        await bee.upload(file);
+      }
+      setUploading(false);
+      setFile(null);
+    }
+
+    if (uploading) {
+      doUpload();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uploading]);
+
+  function renderContent() {
+    switch (selectedTab) {
+      case TabName.Upload: {
+        return (
+          <>
+            <h1>Select a file to upload</h1>
+            <div className="upload">
+              <ImageReader onFileReadFinished={onFileReadFinished} />
+              <button disabled={uploading} onClick={upload}>
+                Upload
+              </button>
+            </div>
+          </>
+        );
+      }
+      case TabName.Gallery: {
+        return (
+          <div className="gallery">
+            <ImageGallery imageUrls={readUrls()} />
+          </div>
+        );
+      }
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="body">
+      <img src={viteLogo} className="logo" alt="Vite logo" />
+      <div className="tabs">
+        <span className="tab" onClick={() => setSelectedTab(TabName.Upload)}>
+          Upload
+        </span>
+        <span className="tab" onClick={() => setSelectedTab(TabName.Gallery)}>
+          Gallery
+        </span>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {renderContent()}
+    </div>
+  );
 }
 
-export default App
+export default App;
